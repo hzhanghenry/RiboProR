@@ -1,0 +1,606 @@
+\documentclass{article}
+
+%\VignetteIndexEntry{RiboProR_Guide}
+%\VignetteDepends{RiboProR}
+%\VignetteKeyword{bioinformatics}
+%\VignetteKeyword{genomics}
+%\VignetteKeyword{RiboSeq}
+%\VignetteKeyword{DESeq2}
+%\VignettePackage{RiboProR}
+
+\usepackage[top=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage[document]{ragged2e}	
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+
+%%  Document Title
+%%  =======================================================================
+
+\title{RiboProR Package: A Short Guide}
+\author{Hongen Zhang, Ph.D.\\
+Section on Nutrient Control of Gene Expression\\
+Division of Molecular and Cellullar Biology\\
+National Institute of Child Health and Human Development\\
+National Institutes of Health\\
+Bethesda, Maryland, USA}
+\date{\today}
+\maketitle
+
+\tableofcontents
+
+
+%%  Introduction
+%%  =======================================================================  
+
+\section{Introduction}
+
+The computational analysis of Ribo-Seq data usually takes two main steps: 
+
+\medskip
+
+The first step is sequence data processing which starts from clipping and 
+trimming fastq records (raw sequence data) to get high quality sequence 
+reads, removing rRNA reads, and then mapping short reads to genome. After 
+mapping is done, the perfect-match alignments are extracted to final BAM 
+files. This step is usually relying on the software beyond R.  
+
+\medskip
+
+The second step includes counting the density of ribosomal footprints from 
+BAM files on each gene and performing relevant statistical analysis to  
+detect translational efficiency (TE) and TE changes between different 
+conditions. The methods in RiboProTools package are focusing on this step.  
+
+\medskip
+
+This vignette will briefly describe following topics:
+
+\begin{itemize}
+\item Counting ribosomal footprints from BAM file
+\item DESeq2 analysis of RiboSeq profiling data
+\item Visualization for RiboSeq profiling data
+\end{itemize}
+
+
+%%  Counting ribosomal footprints from BAM file
+%%  ========================================================================= 
+
+\section{Counting Ribosomal Footprints from BAM Files}
+
+To count ribosomal footprints, the BAM file must be indexed with samtools
+software and a gene annotation file in full BED format (total 12 columns) 
+is also required. Details of BAM file format is introduced at 
+\href{https://samtools.github.io/hts-specs/SAMv1.pdf}
+{(https://samtools.github.io/hts-specs/SAMv1.pdf)}. Description of BED file  
+format can be found at UCSC genome browser \href{https://genome.ucsc.edu/FAQ/FAQformat.html} 
+{(https://genome.ucsc.edu/FAQ/FAQformat.html)}.  
+
+\medskip
+
+The first step of counting ribosomal footprint density is footprint framing.  
+The main purpose of footprint framing is to generate quality control statistics 
+from ribosomal profiling data \\ \href{https://github.com/ingolia-lab/RiboSeq}
+{(https://github.com/ingolia-lab/RiboSeq)}. In this step, several files will 
+be generated including: 
+
+\begin{enumerate}[label=\arabic*)]
+
+\item Reads frame distribution table (*.frame\_len.txt): 
+
+It contains fraction in all qualified reads, total counts and fraction 
+of footprints whose 5' end is on the first, second, or third nucleotide 
+of a codon (frame0, frame1, and frame2) for all reads grouped by read 
+length. This table could be directly used for bar plot to show frame 
+distribution of all reads in a sample.
+
+\item Metagene count tables: 
+
+Two files (*.start\_pos\_len.txt and *.end\_pos\_len.txt) contain a 2-D 
+metagene analysis of footprints around the start and the end of protein
+coding genes. In the tables, rows are for positions relative to CDS start 
+or end position, columns are for total counts at each relative position 
+for each read length.
+
+\item Metagene frame tables: 
+
+Two files (*\_meta\_start\_frames.txt and *\_meta\_stop\_frames.txt) with 
+metagene frames and counts at the positions relative to CDS start or end 
+position. Rows of the table are metagene positions, and columns are positions
+relative to CDS start or end position, frame, and total counts. These two 
+files are used for metagene frame plot.  
+
+\item A-site table (*.asite\_report.txt): 
+
+This is the Output from a-site calculation. Saved for reload for footprint 
+counting  in case change of counting parameters is needed.
+\end{enumerate}
+
+Once the footprint framing is done, raw footprint counts on each gene 
+could be calculated by calling regionCountFrame() with a-site and other 
+required parameters. Default insets for 5' and 3' end of CDS ranges are 
+usually required to ensure the start of the footprint not overlapping 
+with start codon and the end of the footprint not overlapping with stop 
+codons, although zero insets could be applied.  
+
+\medskip
+
+Note: for translational efficiency analysis, raw counts on genes from 
+RNASeq data are needed. Different with footprint counting, reads counting 
+from RNASeq BAM files will use default a-sites for different read length.  
+
+\medskip
+
+Example:
+
+<<eval=FALSE>>=
+library(RiboProR);
+@
+<<eval=FALSE>>=
+bed_file <- system.file("extdata", "yeast-all.bed", package="RiboProR");
+yeast_cds <- rtracklayer::import(bed_file, format="BED");
+defaultInsets <- getDefaultInset();  
+transcript_size <- regionCountFrame(countSizes(defaultInsets, yeast_cds));
+@
+<<eval=FALSE>>=
+ribo_bam_file <- "give_your_own_bam_file_here";
+asite_table <- FpFraming(ribo_bam_file, bed_file);
+@
+<<eval=FALSE>>=
+riboseq_asite <- data.frame(asite=asite_table[,2], 
+				row.names=rownames(asite_table));
+ribo_fpCounts <- regionCountFrame(countAligns(riboseq_asite, defaultInsets,
+	ribo_bam_file, yeast_cds));
+write.table(ribo_fpCounts, file="ribo_sample_1_fp_count.txt", sep="\t", 
+	quote=FALSE, row.names=TRUE, col.names=TRUE);  
+@
+<<eval=FALSE>>=
+rna_bam_file <- "RNASeq.bam";
+rnaseq_asite <- getDefaultRNASeqAsites();
+rna_counts <- regionCountFrame(countAligns(rnaseq_asite, defaultInsets,
+	rna_bam_file, yeast_cds));
+write.table(rna_counts, file="rna_sample_1_count.txt", sep="\t", 
+	quote=FALSE, row.names=TRUE, col.names=TRUE);
+@
+
+In the counting outputs, rows are for genes and columns (total of 4) are 
+for counts in full transcripts, CDS, 5'-UTR, and 3'-UTR. NA is used in 
+case no value available.  
+
+\medskip
+
+After the counting is done, there will be one file for each sample. A 
+count matrix with all samples could be made with following code.
+
+<<eval=FALSE>>=
+directory_name <- "/data/user_name/project_name/raw_counts_From_R";
+file_name_pattern <- "_counts.txt";
+count_column <- 2;
+rowname_column <- 0;
+has.header <- TRUE;
+@
+<<eval=FALSE>>=
+count_table <- getCountMatrixFromFiles(directory_name, file_name_pattern, 
+	count_column, rowname_column, has.header);
+@
+
+Note: it is supposed that the data directory contains only the counts file.
+
+
+%%  DESeq2 analysis with ribosomal footprint data
+%%  =======================================================================
+
+\section{DESeq2 Analysis of Ribosomal Profiling Data}  
+
+Different from gene expression data analysis, DESeq2 analysis with 
+ribosomal profiling data focus on translational efficiency (TE) and TE 
+changes. Translational efficiency is defined as, for each gene, the 
+number of sequencing reads observed among ribosome-associated RNA 
+divided by the number of reads in total poly-A+ RNA. The TE change is 
+defined as the ratio of TEs in same species/strain between two different 
+conditions. So that, in general, ribosomal footprint profiling project 
+should include both Riboseq and RNAseq data from one or more strains 
+with same or different treatment procedures.  
+
+\medskip
+
+DESeq2 analysis of ribosomal profiling data follows the basic procedures 
+from DESeq2 package with more specific on data contents and design models.  
+For convenience, the RiboProR package wraps necessary functions of 
+DESeq2 package in few steps starting from setting DESeqDataSet with count 
+matrix which contains both ribosomal footprint counts and mRNA reads 
+counts.  
+
+\medskip
+
+Note: currently, DESeq2 analysis with RiboProR package only works on 
+ribosomal footprints data with two conditions (such as mutant/treatment 
+and control) with duplicates or triplicates of each sample.  
+
+\begin{enumerate}[label=\arabic*)]  
+
+
+\item The raw count data  
+
+<<eval=FALSE>>=
+data(ribo_pro_data);
+mRNA_wildtype <- 4:6;
+mRNA_mutants  <- 10:12;
+Ribo_wildtype <- 1:3
+Ribo_mutants  <- 7:9;
+@
+<<eval=FALSE>>=
+control_name <- "wildtype";
+mutant_name  <- "mutants";
+@
+<<eval=FALSE>>=
+count_matrix <- getCountMatrixFromTable(ribo_pro_data, Ribo_wildtype, 
+	Ribo_mutants, mRNA_wildtype, mRNA_mutants);
+@  
+
+
+\item Filter the count data by mRNA and ribosomal count levels  
+
+<<eval=FALSE>>=
+mRNA_col <- 1:6; 
+ribo_col <- 7:12;
+@
+<<eval=FALSE>>=
+mRNA_level <- 10;
+Ribo_level <- 0;
+@
+<<eval=FALSE>>=
+count_matrix <- filterCountMatrix(count_matrix, mRNA_col, ribo_col,
+	mRNA_level, Ribo_level);
+@
+
+\item Load gene annotation data   
+
+This step is optional. If not used, set gene\_info to NULL or ignore this 
+argument and pass arguments with matching by name in next step.  
+
+<<eval=FALSE>>=
+gene_list <- rownames(count_matrix);
+data(yeast_gene_description)
+@
+<<eval=FALSE>>=
+has.header <- FALSE;
+id_column <- 1;
+name_column <- 2;
+desc_column <- 3; 
+gene_info <- getAnnotationInfo(yeast_gene_description, gene_list,  
+	has.header, id_column, name_column, desc_column);
+@
+
+
+\item Setup DESeqDataSet  
+
+To follow the paradigm of DESeq2, the terms of condition and genotype are 
+used for columns of experiment table, and sequence methods (Riboseq and 
+RNAseq) will be set as conditions and the strains or treatment groups will 
+be set as genotype columns. Full model with interaction terms is used as 
+design.  
+
+<<eval=FALSE>>=
+num_Ribo_wildtype <- length(Ribo_wildtype);
+num_Ribo_mutant   <- length(Ribo_mutants);
+num_mRNA_wildtype <- length(mRNA_wildtype);
+num_mRNA_mutant   <- length(mRNA_mutants);
+@
+<<eval=FALSE>>=
+dds <- getDESeqDataSet(count_matrix, num_Ribo_wildtype, num_Ribo_mutant,
+	num_mRNA_wildtype, num_mRNA_mutant, gene_info);
+@
+
+
+\item Run DESeq() and extract translational efficiency and TE changes  
+
+In this step, three tab-delimited text files will be saved for TE of 
+control samples, TE of treatment/mutant samples, and TE changes between 
+treatment/mutant and control groups.  
+
+<<eval=FALSE>>=
+dds_TE <- runDESeq(dds, has.SizeFactors=FALSE, reset.design=FALSE);
+dds_TE <- extractEfficiencyChange(dds_TE, control_name, mutant_name);
+@
+
+
+\item Run DESeq() and extract fold changes of Ribosomal FP and mRNA  
+
+To extract fold changes of ribosomal fp and mRNA between two different 
+conditions, design model will be automatically switched to single factor 
+model and results will be also saved to files.  
+
+<<eval=FALSE>>=
+dds_RC <- runDESeq(dds, has.SizeFactors=FALSE, reset.design=TRUE);
+dds_RC <- extractTranscriptionChange(dds_RC, control_name, mutant_name);
+@
+
+Same as step 5), outputs from DESeq2::results() will be saved to tab-
+delimited files(Ribosomal FP change and mRNA change).  
+
+
+\item Save normalized counts for later use  
+
+<<eval=FALSE>>=
+normalized_counts <- DESeq2::counts(dds_TE, normalize=TRUE);
+out_file <- paste0(mutant_name, "_vs_", control_name, 
+	"_Normalized_counts.txt");
+write.table(normalized_counts, file=out_file, sep="\t", quote=FALSE,
+	row.names=FALSE, col.names=TRUE)
+@
+
+\end{enumerate}
+
+
+
+%%  Visualization of Ribosomal footprint data
+%%  ====================================================================
+
+\section{Visualization of Ribosomal Profiling Data}  
+
+\begin{enumerate}[label=\arabic*)]
+
+
+\item Generate wiggle file from bam file  
+
+Wiggle file is a commonly used to view the coverage of sequencing data. 
+RiboProR package provides functions to generate wiggle file from BAM 
+file. Except of BAM file, gene annotation in BED format and a-site file 
+are also required. Simply call the getWiggleCounts() with three 
+file names will get all raw counts then the counts could be normalized/
+scaled to a target value for all samples for visualization.  
+
+\medskip
+
+Example:  
+
+<<eval=FALSE>>=
+bam_file <- "RiboSeq.bam";
+bed_file <- system.file("extdata", "yeast-all.bed", package="RiboProR");
+asite_file <- system.file("extdata", "ribo_asite.txt", package="RiboProR"); 
+
+@
+<<eval=FALSE>>=
+yeast_bed <- rtracklayer::import(bed_file, "BED");
+asite <- readAsiteFromFile(asite_file);				
+wiggle_counts <- getWiggleCounts(bam_file, asite, bed_file);
+normed_counts <- normalizeWiggleCounts(wiggle_counts);
+writeWiggleFiles(normed_counts, bam_file, TRUE);
+@
+
+
+\item Frame plots  
+
+During the footprint framing step, two kinds of frame tables are generated: 
+reads frame distribution table and metagene frame tables. Two methods 
+are implemented in RiboProR package to plot:    
+
+\medskip
+
+\begin{enumerate}
+\item Frame distributions of all reads in a bam file grouped by read length  
+\item Frame distributions at user-selected metagene positions.  
+\end{enumerate}
+
+\medskip
+
+Example of footprint frame distribution plot  
+
+<<eval=FALSE>>=
+frame_file <- system.file("extdata", "ribo_frame_len.txt", 
+		package="RiboProR");
+fpFramePlot(frame_file);
+@
+
+\includegraphics[width=\textwidth]{Ribo_fp_frame_plot.png}
+Figure 1. Framge distribution of ribosomal footprints  
+
+\medskip
+\medskip
+
+Example of metagene frame distribution plot  
+
+<<eval=FALSE>>=
+at_start <- system.file("extdata", "ribo_meta_start_frames.txt", 
+	package="RiboProR");
+at_stop <- system.file("extdata", "ribo_meta_stop_frames.txt", 
+	package="RiboProR");
+plotMetageneFrames(at_start, at_stop);
+title("Metagene Frame Distribution");
+@
+
+\includegraphics[width=\textwidth]{Ribo_metagene_frame_plot.png}
+Figure 2. Metagene frame distribution
+
+\medskip
+\medskip
+
+Example of metagene counts plot
+
+<<eval=FALSE>>=
+count_file <- system.file("extdata", "ribo_meta_start_frames.txt", 
+	package="RiboProR");
+plotMetageneCounts(count_file, from_position=-50, to_position=50, 
+    codon="Start", x_interval=10)
+@
+
+\includegraphics[width=\textwidth]{Ribo_metagene_count_plot.png}
+Figure 3. Metagene count plot
+
+\medskip
+\medskip
+
+
+\item Plots DESeq2 results  
+
+Five methods are implemented for convenience to plot data in DESeqDataSet 
+object including:  
+
+\medskip
+
+\begin{enumerate}
+\item box plot of counts data  
+\item scatter plot with counts of replicate samples  
+\item scatter plot of translational co-efficiency  
+\item correlation heatmap with counts of all samples  
+\item correlation matrix with counts of all samples  
+\end{enumerate}
+
+\medskip
+
+Example of box plot showing distribution of counts in each sample:  
+
+<<eval=FALSE>>=
+fpCountsBoxPlot(dds_TE);
+@
+
+\includegraphics[width=\textwidth]{Ribo_fp_counts_boxplot.png}
+Figure 4. Box plot of ribosomal footprint counts  
+
+\medskip
+\medskip
+
+Example of scatter plot with count data of replicates samples:  
+
+<<eval=FALSE>>=
+plotReplicates(dds_TE);
+@
+\includegraphics[width=\textwidth]{Ribo_fp_counts_scatterplot.png}
+Figure 5. Scatter plot of ribosomal footprint counts  
+
+\medskip
+\medskip
+
+For both box plot and scatter plot above, normalized method could be set 
+to "size", "fpm", or "fpkm", several parameters including for colors, 
+labels can also be customized.  
+
+\medskip
+
+Example of scatter plot showing translational efficiency between two 
+groups:  
+
+<<eval=FALSE>>=
+plotTranslationEfficiency(dds_TE)
+@
+
+\includegraphics[width=\textwidth]{Ribo_fp_TE_scatterplot.png}
+Figure 6. Scatter plot of translational efficiency  
+
+\medskip
+\medskip
+
+Example of plot correlation heatmap with counts from all samples 
+(image will be saved to file):
+
+<<eval=FALSE>>=
+plotCorrelationHeatmap(dds_TE, image_name="ribo_sample");
+@
+
+\includegraphics[width=\textwidth]{Ribo_fp_correlation_heatmap.png}
+Figure 7. Correlation heatmap of translational efficiency  
+ 
+\medskip
+\medskip
+
+Example of correlation matrix plot with counts from all samples:  
+
+<<eval=FALSE>>=
+count_data <- getCountsData(dds_TE);
+plotCorrelationMatrix(count_data);
+@
+
+\includegraphics[width=\textwidth]{Ribo_fp_correlation_matrix.png}
+Figure 8. Correlation matrix of translational efficiency  
+
+\medskip
+
+\item Heamap plot 
+
+This method makes heatmap image with count or ratio data of selected  
+(mostly the significantly regulated) genes. The input data need be  
+generated with extra procedures and output will be saved as pdf file  
+in current directory.  
+
+\medskip
+
+Example of heatmap plot with count matrix:  
+
+<<eval=FALSE>>=
+control_TE <- DESeq2::results(dds_TE, contrast=c("condition","Ribo","mRNA"))
+mutant_TE <- DESeq2::results(dds_TE, list(c(DESeq2::resultsNames(dds_TE)[3], 
+									DESeq2::resultsNames(dds_TE)[4])))
+									
+mut_te <- as.numeric(mutant_TE[,2])
+wt_te  <- as.numeric(control_TE[,2])
+TE_fc  <- mut_te - wt_te
+sig_fc <- which(abs(TE_fc) >= 2)
+
+plot_data <- DESeq2::counts(dds_TE, normalize=TRUE)
+plot_data <- plot_data[sig_fc,]
+
+plotHeatmap(plot_data, sample_name="TE_data", gene_name=rownames(plot_data), 
+		image_type="pdf", image_width=8, is.log2=FALSE, scale_by="row");
+@
+
+By default, plotHeatmap() will save the image in pdf format in current 
+directory.  
+
+\includegraphics[width=\textwidth]{Ribo_fp_count_heatmap.png}
+Figure 9. Heatmap of count data  
+
+
+\end{enumerate}  
+
+\section{sessionInfo}
+<<sessionInfo>>=
+sessionInfo()
+@ 
+
+%%	Bibliograghy
+%%  =======================================================================
+
+\begin{thebibliography}{10}
+
+\bibitem{Ingolia2009} Nicholas T Ingolia, Sina Ghaemmaghami, John R S 
+Newman, and Jonathan S Weissman. Genome-wide analysis in vivo of 
+translation with nucleotide resolution using ribosome profiling. 
+Science 324(5924):218~23, Apr 2009. doi:10.1126/science.1168978.  
+
+\bibitem{Ingolia2010} Ingolia, Nicholas. (2010). Genome-Wide Translational 
+Profiling by Ribosome Footprinting. Methods in Enzymology 470. 119-42, 
+10.1016/S0076-6879(10)70006-9.  
+
+\bibitem{Ingolia2012} Ingolia NT, Brar GA, Rouskin S, McGeachy AM, 
+Weissman JS. (2012). The ribosome profiling strategy for monitoring 
+translation in vivo by deep sequencing of ribosome-protected mRNA 
+fragments. Nat Protoc. 8:1534~50, doi: 10.1038/nprot.2012.086.  
+
+\bibitem{Ingolia2014} Nicholas T. Ingolia, Gloria A. Brar, Noam Stern-
+Ginossar, Michael S. Harris, Gae lle J.S. Talhouarne, Sarah E. Jackson, 
+Mark R. Wills, and Jonathan S. Weissman. (2014). Ribosome Profiling 
+Reveals Pervasive Translation Outside of Annotated Protein-Coding Genes. 
+Cell Reports 8, 1365~1379, 
+\href{https://doi.org/10.1016/j.celrep.2014.07.045}
+{https://doi.org/10.1016/j.celrep.2014.07.045}  
+
+\bibitem{Love2014} Love MI, Huber W, Anders S (2014). Moderated estimation 
+of fold change and dispersion for RNA-seq data with DESeq2.
+Genome Biology,15, 550, doi:10.1186/s13059-014-0550-8   
+
+\bibitem{Love2018} Michael I. Love, Simon Anders, and Wolfgang Huber. Analyzing 
+RNA-seq data with DESeq2.  
+
+\href{http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html}
+{http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html}  
+
+
+\end{thebibliography}
+
+
+\end{document}
