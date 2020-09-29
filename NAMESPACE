@@ -1,0 +1,22 @@
+
+importFrom("stats", "cor", "cor.test", "lm")
+importFrom("utils", "as.roman", "head", "read.delim", 
+           "read.table", "write.table")
+importFrom("Biostrings", "reverseComplement")
+importFrom("S4Vectors", "DataFrame","queryHits","Rle")
+importFrom("corrplot", "corrplot")
+importFrom("gplots", "heatmap.2", "bluered")
+importFrom("Hmisc", "rcorr")
+
+import("IRanges")
+import("GenomicRanges")
+import("GenomicAlignments")
+import("rtracklayer")
+import("Rsamtools")
+import("DESeq2")
+import("grDevices")
+import("graphics")
+import("parallel")
+
+exportPattern("^[[:alpha:]]+")
+

@@ -1,0 +1,19 @@
+Package: RiboProR
+Version: 1.0
+Title: R Tools for Ribosomal Footprints Profiling Analysis
+Authors@R: c(person("Hongen", "Zhang", role = c("aut", "cre"),
+					email = "hzhang@mail.nih.gov"),
+				person("Fujun", "Zhou", role="aut"))
+Author: Hongen Zhang [aut, cre],
+		Fujun Zhou [aut]
+Maintainer: Hongen Zhang <hzhang@mail.nih.gov>
+Depends: R(>= 3.4)
+Imports: Biostrings,corrplot,DESeq2,IRanges,GenomicAlignments,GenomicRanges,
+	gplots,grDevices,graphics,Hmisc,parallel,Rsamtools,rtracklayer,S4Vectors,
+	stats,utils
+Description: A light version of RiboProTools providing simple methods for 
+	Ribosomal footprints profiling analysis including of: fp framing, fp 
+	counting, DESeq2 analysis for translational efficiency change, and 
+	few plot methods for data visualization.
+License: GPL (>=2.0)
+biocViews: Visualization, Riboseq, RNASeq, DESeq2
