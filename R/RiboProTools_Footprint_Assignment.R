@@ -28,9 +28,6 @@
 #*  <fp assignment><fp assignment><fp assignment><fp assignment><fp assignment>
 
 
-
-
-
     
 #*  =========================================================================
 #*
@@ -67,21 +64,19 @@ alignASites <- function(asiteOffsets, alns)  {
 
 #*	=========================================================================
 #*
-#*		2.	getAlignASites()
+#*    2. getAlignASites()
 #*
-#*		Get aligned A sites for a transcript. This only call the function
-#*		above (alignASites()).
+#*    Get aligned A sites for a transcript. This only call the function
+#*    above (alignASites()).
 #*
-#*		Arguments:
+#*    Arguments:
 #*
-#*			asiteOffsets:	A data frame of one column with row names are 
-#*							fragment length and column is for A sites.
-#*			bamfle:			character vector, bam file name and path.
-#*			trx:			GRange object for a transcript.
+#*        asiteOffsets:  A data frame of one column with row names are 
+#*                       fragment length and column is for A sites.
+#*        bamfle:        character vector, bam file name and path.
+#*        trx:           GRange object for a transcript.
 #*
-#*		Return:		
-#*
-#*			A GAlignments object for A site nucleotides only.
+#*    Return:  A GAlignments object for A site nucleotides only.
 #*
 #*
 getAlignASites <- function(asiteOffsets, bamfile, trx)  {
@@ -169,7 +164,7 @@ trxRegionCountSizes <- function(insets, trx, cds)  {
 
 #* =========================================================================
 #*
-#*    5.	trxRegionCountAligns()
+#*    5.  trxRegionCountAligns()
 #*
 #*    Check out if reads of a transcript has A site. If yes, get the total 
 #*    counts for transcript, cds, 5-UTR, and 3-UTR. Otherwise, set counts 
