@@ -148,7 +148,6 @@ validateCodons <- function(codons) {
     if(is.character(codons) == FALSE)
         stop("Codon must be character vector.")
 
-
     codon_base <- c("A", "U", "G", "C");
     for(a_codon in 1:length(codons))
     {
@@ -267,9 +266,9 @@ getAnnotationFromBigBedFile <- function(bed_file, has.header=FALSE,
     if(sum(cds_start >= cds_stop) > 0)
         stop("CDS start position greater than stop position.")
 
-	#*  Gene start and stop positions must cover the CDS range.
-	#*  Note: the number starts from 5' to 3' (left to right)	
-	#*  ---------------------------------------------------------
+    #*  Gene start and stop positions must cover the CDS range.
+    #*  Note: the number starts from 5' to 3' (left to right)	
+    #*  ---------------------------------------------------------
     if(sum(gene_start > cds_start) > 0 | sum(cds_stop > gene_stop) > 0)
         stop("CDS position is beyond of gene position range.")
 
@@ -325,9 +324,9 @@ getAnnotationFromBigBedFile <- function(bed_file, has.header=FALSE,
 #*
 #*    Argument:
 #*
-#*        bed_info:	A data frame with 12 columns read from bigBed file.
-#*                  It should be checked before call this function and
-#*                  must have required standard column names.
+#*        bed_info:  A data frame with 12 columns read from bigBed file.
+#*                   It should be checked before call this function and
+#*                   must have required standard column names.
 #*
 #*    Return: Logic, if the number of block size and block start
 #*            positions match to block counts.
@@ -377,7 +376,6 @@ checkBlocksInBed <- function(bed_info) {
 #*
 #*    A data frame containing sequence data where rows are for each 
 #*    chromosome and columns are for chromosome names and sequences
-#*
 #*
 #*    Last edited on June 25, 2019
 #*
@@ -487,7 +485,7 @@ getSequenceFromOneFastaFile <- function(file_name) {
 #*        DNA_seq:  A data frame with rows for chromosome(s) and 
 #*                  columns for chromosome name(s) and sequence.
 #*
-#*        bed_info:	A data frame with contents same as bigBed file.   
+#*        bed_info: A data frame with contents same as bigBed file.   
 #*                  The data frame should be the one returned by the  
 #*                  function call to getAnnotationFromBigBedFile() 
 #*                  with column names same as the standard column 
@@ -561,8 +559,8 @@ getUTRInfoDefinedByBed <- function(DNA_seq, bed_info) {
         #*  --------------------------------------------------
         if(bed_info$blockCount[a_row] == 0) next;
 
-        #*		Chromosome for this bed line
-        #*		-----------------------------------------------
+        #*  Chromosome for this bed line
+        #*  -----------------------------------------------
         bed_chrom <- as.character(bed_info$chrom[a_row]);
         seq_row   <- which(seq_chrom == bed_chrom);
 
@@ -592,14 +590,14 @@ getUTRInfoDefinedByBed <- function(DNA_seq, bed_info) {
 #*
 #*    Arguments:
 #*
-#*        DNA_seq:	A data frame with rows for chromosome(s) and 
-#*                  columns for chromosome name(s) and sequence(s).
+#*        DNA_seq:	 A data frame with rows for chromosome(s) and 
+#*                   columns for chromosome name(s) and sequence(s).
 #*
-#*        bed_info:	A data frame with contents same as bigBed file.   
-#*                  The data frame should be the one returned by the  
-#*                  function call to getAnnotationFromBigBedFile() 
-#*                  with column names same as the standard column 
-#*                  names of bigBed file.
+#*        bed_info:  A data frame with contents same as bigBed file.   
+#*                   The data frame should be the one returned by the  
+#*                   function call to getAnnotationFromBigBedFile() 
+#*                   with column names same as the standard column 
+#*                   names of bigBed file.
 #*
 #*                1).   chrom:      chromosome name of each feature
 #*                2).   chromStart: start position of each feature
@@ -643,7 +641,7 @@ checkChromosomeInfo <- function(DNA_seq, bed_info) {
     }
 	
     #*	No return if anything is wrong due to the stop().
-	     (TRUE);
+	return (TRUE);
 }
 
 
@@ -809,7 +807,7 @@ getReversedSequence <- function(seq_fragment) {
 
 #*  ===================================================================
 #*
-#*    15.	getComplementarySequence()
+#*    15.  getComplementarySequence()
 #*
 #*    Get complementary sequence for a fragment of DNA sequence
 #*
@@ -957,7 +955,7 @@ getCDSInfoDefinedByBed <- function(DNA_seq, bed_info) {
 
 #* =======================================================================
 #*
-#*    18.	writeORFInfoToFile()
+#*    18.  writeORFInfoToFile()
 #*
 #*    The main function to screen ORF information. 
 #*
@@ -1111,7 +1109,7 @@ setCodonIndexPair <- function(start_index, stop_index) {
 
 #* =======================================================================
 #*
-#*    21.	screenORF()
+#*    21.  screenORF()
 #*
 #*    Screen a sequence fragment to get start codon, context from -3  
 #*    to +4 base positions of start codon, length of ORF, distance from 
@@ -1145,8 +1143,8 @@ screenORF <- function(seq_info, codon_list, codon_pair,
         orf_context <- getStartCodonContext(codon_list, start_index, 
                             mRNA_seq, start_at);
 
-        #*		Length of ORF. Stop codon will not be included
-        #*		----------------------------------------------------
+        #*  Length of ORF. Stop codon will not be included
+        #*  ----------------------------------------------------
         last_codon <- stop_index;
         if(last_codon == 0) {  
             last_codon <- length(codon_list);
@@ -1192,7 +1190,7 @@ screenORF <- function(seq_info, codon_list, codon_pair,
 
 #*  =======================================================================
 #*
-#*    22.	getORFPositions()
+#*    22.  getORFPositions()
 #*
 #*    Calculate genomic positions for a ORF (start, stop, distance
 #*    to cap (UTR start), and distance to main AUG codon
