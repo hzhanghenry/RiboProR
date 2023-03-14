@@ -1,27 +1,27 @@
 #*
-#*		File:	RiboProfiling_Default_Parameters.R
+#*    File:	RiboProfiling_Default_Parameters.R
 #*
-#*		Functions to get default parameters for ribosomal footprinting 
-#*		analsis. Default parameters are based on Dr. Nocholas Ingoliad's 
-#*		source. 
+#*    Functions to get default parameters for ribosomal footprinting 
+#*    analsis. Default parameters are based on Dr. Nocholas Ingoliad's 
+#*    source. 
 #*
-#*		Reference:
+#*    Reference:
 #*
-#*		Nicholas T. Ingolia, Gloria A. Brar, Noam Stern-Ginossar, Michael S. 
-#*		Harris, Gaelle J.S. Talhouarne, Sarah E. Jackson, Mark R. Wills,
-#*		and Jonathan S. Weissman (2014). Ribosome Profiling Reveals Pervasive
-#*		Translation Outside of Annotated Protein-Coding Genes. Cell Reports  
-#*		8, 1365~1379.
+#*    Nicholas T. Ingolia, Gloria A. Brar, Noam Stern-Ginossar, Michael S. 
+#*    Harris, Gaelle J.S. Talhouarne, Sarah E. Jackson, Mark R. Wills,
+#*    and Jonathan S. Weissman (2014). Ribosome Profiling Reveals Pervasive
+#*    Translation Outside of Annotated Protein-Coding Genes. Cell Reports  
+#*    8, 1365~1379.
 #*
-#*		Last revised on April 18, 2018
+#*    Last revised on April 18, 2018
 #*	________________________________________________________________________
 #*	<parameters><parameters><parameters><parameters><parameters><parameters>
 
 
 
 
-#	Default parameters
-#	===========================================
+#  Default parameters
+#  ===========================================
 
 getAllDefaultParameters <- function() {
     parameters <- list(
@@ -106,6 +106,6 @@ getDefaultMinNumberOfAminoAcid <- function() {
 
 
 #*
-#*	End of RiboProfiling_Default_Parameters.R
-#*	________________________________________________________________________
-#*	<parameters><parameters><parameters><parameters><parameters><parameters>
+#*  End of RiboProfiling_Default_Parameters.R
+#*  ________________________________________________________________________
+#*  <parameters><parameters><parameters><parameters><parameters><parameters>
