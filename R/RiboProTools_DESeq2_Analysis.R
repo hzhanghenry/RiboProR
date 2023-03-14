@@ -25,7 +25,7 @@
 
 #*  =======================================================================
 #*
-#*    1.	getCountTableFromRawCountFiles()
+#*    1.  getCountTableFromRawCountFiles()
 #*		
 #*    Read each raw count file and merge them as one matrix
 #*
@@ -74,7 +74,7 @@ getCountMatrixFromFiles <- function(directory_name, file_name_pattern,
 
 #*  =======================================================================
 #*
-#*    2.	getCountMatrixFromTable()
+#*    2.  getCountMatrixFromTable()
 #* 
 #*    In general, Ribosomal profiling data processing will generate 
 #*    a count table that contains both Riboseq and RNAseq counts for 
@@ -155,7 +155,7 @@ getCountMatrixFromTable <- function(count_table=NULL,
 
 #*  =======================================================================
 #*
-#*    3.	filterCountMatrix()
+#*    3.  filterCountMatrix()
 #*		
 #*    Filter the count matrix by mRNA mean or ribo mean to remove 
 #*    the rows with low count of mRNA reads or ribo footprints
@@ -223,7 +223,7 @@ filterCountMatrix <- function(count_matrix=NULL,
 
 #*  =======================================================================
 #*
-#*    4.	getAnnotationInfo()
+#*    4.  getAnnotationInfo()
 #*
 #*    Extract annotation data from a database file for selected genes .
 #*
@@ -262,7 +262,7 @@ getAnnotationInfo <- function(annotation, gene_list, id_column=1,
 
 #*	=======================================================================
 #*
-#*    5.	getDESeqDataSet()
+#*    5.  getDESeqDataSet()
 #*
 #*    Generate a DESeqDataSet from count matrix with fixed order of 
 #*    sample columns, fixed colData, and full design model:
@@ -323,7 +323,7 @@ getDESeqDataSet <- function(count_matrix,
 
 #*  =======================================================================
 #*
-#*    6.	extractEfficiencychange()
+#*    6.  extractEfficiencychange()
 #*
 #*    Extract translational efficiency (TE) and TE changes with
 #*    interaction term design
@@ -402,7 +402,7 @@ extractEfficiencyChange <- function(dds_object, control_name,
 
 #*  =======================================================================
 #*
-#*    7.	extractTranscriptionChange()
+#*    7.  extractTranscriptionChange()
 #*
 #*    Extract mRNA and Ribo changes with group variables.
 #*
@@ -457,7 +457,7 @@ extractTranscriptionChange <- function(dds_object,
 
 #*  =======================================================================
 #*	
-#*    8.	quickDESeq2Test()
+#*    8.  quickDESeq2Test()
 #*
 #*    Perform DESeq analysis with one call
 #*
@@ -531,7 +531,7 @@ quickDESeq2Test <- function(count_table,
 
 #*  =====================================================================
 #*
-#*    9.	getUORFCountMatrixFromTwoFileSets()
+#*    9.  getUORFCountMatrixFromTwoFileSets()
 #*
 #*    Generate count table from single count files for DESeq2 analysis 
 #*    with default normalization or normalization by subsets. Count 
@@ -606,7 +606,7 @@ getUORFCountMatrixFromTwoFileSets <- function(file_directory,
 
 #*  =====================================================================
 #*
-#*    10.	getUorfCountMatrixInFujunFormat()
+#*    10.  getUorfCountMatrixInFujunFormat()
 #*
 #*    Generate count table from single count files with Fujun*s method
 #*    for DESeq2 analysis. Each count file contains both uorf fp counts
@@ -679,7 +679,7 @@ getUORFCountMatrixInFujunFormat <- function(file_directory,
 
 #*  =======================================================================
 #*	
-#*    11.	runDESeq()
+#*    11.  runDESeq()
 #*
 #*    Get DESeq object from DESeq() with a DESeqDataSet returned 
 #*    from getDESeqDataSet() or perform estimateDispersion() and  
@@ -727,7 +727,7 @@ runDESeq <- function(deseq_dataset, has.SizeFactors=FALSE,
 
 #*  =======================================================================
 #*	
-#*    12.		getUORFCountMatrixFromOneFileSet()
+#*    12.  getUORFCountMatrixFromOneFileSet()
 #*
 #*    Generate uorf count matrix from files which contains fp counts
 #*    for uorf and cds based on one bed file. Genes of uorf must be
