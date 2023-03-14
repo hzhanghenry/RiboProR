@@ -606,7 +606,7 @@ getASiteTable <- function(frame_table, at_start, at_end, parameters) {
 
 #*  ===========================================================================
 #*
-#*    10.	getReadPeaks()
+#*    10.  getReadPeaks()
 #*
 #*    Find count peaks for each read length from metagene length table.
 #*			
@@ -709,7 +709,7 @@ validateParameters <- function(parameters) {
 }
 
 
-#*	===========================================================================
+#*  ===========================================================================
 #*
 #*    13.  getMetageneFrames()
 #*
@@ -741,7 +741,7 @@ getMetageneFrames <- function(posProfile, bam_file_name) {
 }
 
 
-#*	===========================================================================
+#*  ===========================================================================
 #*
 #*    14.  summerizeMetageneFrames()
 #*
