@@ -791,25 +791,24 @@ summerizeMetageneFrames <- function(posProfile, pos_col=1) {
 
 
 
-#'	===========================================================================
-#'
-#'		15.	initializeMetageneFrameTable()
-#'
-#'		Initialized a empty matirx(all zeros) with 3 columns and rows of
-#'		number of all unique positions (argumnents)
-#'
-#'		Argument:
-#'
-#'		position_set:  Integer vector, unique position set of all metagene
-#'						positions (position of reads relative to cds start 
-#'						or cds stop positions)
-#'
-#'		Return:
-#'
-#'		A data frame of 3 columns for number of frames, frames, and
-#'		metagene positions.
-#'
-#'
+#*  ===========================================================================
+#*
+#*    15.  initializeMetageneFrameTable()
+#*
+#*    Initialized a empty matirx(all zeros) with 3 columns and rows of
+#*    number of all unique positions (argumnents)
+#*
+#*    Argument:
+#*
+#*        position_set:  Integer vector, unique position set of all metagene
+#*                       positions (position of reads relative to cds start 
+#*                       or cds stop positions)
+#*
+#*    Return:
+#*
+#*        A data frame of 3 columns for number of frames, frames, and
+#*        metagene positions.
+#*
 initializeMetageneFrameTable <- function(position_set) {
 
     pos_set <- unique(position_set);	
