@@ -260,7 +260,7 @@ getAnnotationInfo <- function(annotation, gene_list, id_column=1,
 }
 
 
-#*	=======================================================================
+#*  =======================================================================
 #*
 #*    5.  getDESeqDataSet()
 #*
@@ -271,7 +271,7 @@ getAnnotationInfo <- function(annotation, gene_list, id_column=1,
 #*
 #*    Arguments:
 #*
-#*        count_matrix:		  A matrix with columns in the order of:
+#*        count_matrix:       A matrix with columns in the order of:
 #*                            mRNA control samples, and mRNA treatment  
 #*                            samples, ribosomal control samples, and  
 #*                            ribosomal treatment samples.
@@ -330,16 +330,16 @@ getDESeqDataSet <- function(count_matrix,
 #*
 #*    Arguments:
 #*
-#*        dds_object:			A DESeq object returned from DESeq(dds) or
-#*								nbinomWaldTest(dds). The design model must be
-#*								~ genotype + condition + genotype:condition.
-#*        control_name:		Character vectors, name of control group.
-#*        mutant_name:		Character vectors, name of mutant group.
-#*        efficiency_type:	Character vectors, name of efficiency
-#*								type, such as "TE" or "RRO"
-#*        meta_cols:			Positive integer, columns of meta-data to be 
-#*								attached to outputs, set 0 for nothing to 
-#*								attach, NULL to output all columns.
+#*        dds_object:       A DESeq object returned from DESeq(dds) or
+#*                          nbinomWaldTest(dds). The design model must be
+#*                          ~ genotype + condition + genotype:condition.
+#*        control_name:     Character vectors, name of control group.
+#*        mutant_name:      Character vectors, name of mutant group.
+#*        efficiency_type:  Character vectors, name of efficiency
+#*                          type, such as "TE" or "RRO"
+#*        meta_cols:        Positive integer, columns of meta-data to be 
+#*                          attached to outputs, set 0 for nothing to 
+#*                          attach, NULL to output all columns.
 #*        Return:
 #*
 #*            A DESeqDataSet with new elements added. 
@@ -688,15 +688,15 @@ getUORFCountMatrixInFujunFormat <- function(file_directory,
 #*			  
 #*    Arguments:
 #*	
-#*			deseq_dataset:		A DESeq object returned from getDESeqDataSet() 
-#*								or from getDESeqDasetWithSubsetSizeFactors().
-#*			has.SizeFactors:	Logic, if the deseq_daaset has size factor.
-#*			reset.design:		Logic, if need reset design model. The 
-#*								default design model is with interactions:
-#*								~ genotype + condition + genotype:condition 
-#*								whihc is for translational efficiency test. 
-#*								For tranascription test, it must be changed 
-#*								to ~group
+#*        deseq_dataset:    A DESeq object returned from getDESeqDataSet() 
+#*                          or from getDESeqDasetWithSubsetSizeFactors().
+#*        has.SizeFactors:  Logic, if the deseq_daaset has size factor.
+#*        reset.design:     Logic, if need reset design model. The 
+#*                          default design model is with interactions:
+#*                          ~ genotype + condition + genotype:condition 
+#*                          whihc is for translational efficiency test. 
+#*                          For tranascription test, it must be changed 
+#*                          to ~group
 #*
 #*    Return:  A DESeq object with all test results
 #*
@@ -750,6 +750,7 @@ runDESeq <- function(deseq_dataset, has.SizeFactors=FALSE,
 #*        uorf_ID_patter:     Character vector, unique pattern of uorf ID 
 #*                            used to distinguish uorf ID from gene ID.
 #*
+#*    Return:  A matrix with read counts of both CDS and uORF.
 #*
 getUORCountMatrixFromOneFileSet <- function(directory_name, 
     uorf_file_pattern, mrna_file_pattern=NULL, 
