@@ -1,5 +1,5 @@
 #*
-#*    File:	RiboProfiling_Wiggle_Track.R
+#*    File:  RiboProfiling_Wiggle_Track.R
 #*
 #*    Functions to generate wiggle files from bam file.
 #*
@@ -55,7 +55,7 @@
 ##
 ##        bam_file:       chraracter vector, name of bam file (with path) 
 ##        asite_table:    data frame of column 1 for a site and rownames
-##                    for read length. A file name is also accepted.
+##                        for read length. A file name is also accepted.
 ##        annot_bed_file: chraracter vector, name of bed file (with path)
 ##
 ##    Return:
