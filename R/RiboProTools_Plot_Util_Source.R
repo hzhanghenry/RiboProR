@@ -829,8 +829,8 @@ getMetageCountsMatrix <- function(count_files, from_position,
 }
 
 #*
-#*	End of RiboProfiling_Plot_Util_Source.R
-#*	__________________________________________________________________
-#*	<Plot_Util><Plot_Util><Plot_Util><Plot_Util><Plot_Util><Plot_Util>
+#*  End of RiboProfiling_Plot_Util_Source.R
+#*  __________________________________________________________________
+#*  <Plot_Util><Plot_Util><Plot_Util><Plot_Util><Plot_Util><Plot_Util>
 
 	
