@@ -75,7 +75,7 @@ relativeWithin <- function(qpos, outer)  {
 
 #* =========================================================================
 #*
-#*    2.	absoluteOuter()
+#*    2.  absoluteOuter()
 #*
 #*    Convert a transcript-relative query position (qpos) to an absolute
 #*    genomic coordinate based on a transcript whose coordinates are given
@@ -392,7 +392,7 @@ getAlignments <- function(bamfile, trx) {
 
 #* =========================================================================
 #*
-#*    11.	getSequence()
+#*    11.  getSequence()
 #*
 #*    Get sequence from fasta file for a transcript. 
 #*
