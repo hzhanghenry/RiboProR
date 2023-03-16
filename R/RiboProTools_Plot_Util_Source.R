@@ -1,19 +1,19 @@
 #*
-#*    File:	RiboProfiling_Plot_Util_Source.RGB
+#*    File:  RiboProfiling_Plot_Util_Source.RGB
 #*
 #*    Plot Utilities for Presenting Riboseq Profiling Data
 #*
 #*    Function implemented:
 #*
-#*    1)  getCountsData()
-#*    2)  fpCountsBoxPlot()
-#*    3)  plotReplicates()
-#*    4)  plotTranslationEfficiency()
-#*    5)  getPlotColors()
-#*    6)  getDefaultColors()
-#*    7)  fpFramePlot()
-#*    8)  plotMetageneFrames
-#*    9)  getRegionFrames()
+#*    1)   getCountsData()
+#*    2)   fpCountsBoxPlot()
+#*    3)   plotReplicates()
+#*    4)   plotTranslationEfficiency()
+#*    5)   getPlotColors()
+#*    6)   getDefaultColors()
+#*    7)   fpFramePlot()
+#*    8)   plotMetageneFrames
+#*    9)   getRegionFrames()
 #*    10)  getPrettyLabels()
 #*    11)  plotMetageneCounts() 		
 #*    12)  plotHeatmap()
@@ -45,7 +45,7 @@
 #*                    exist in mcols of dds. Could be set as NULL
 #*                    for no normalization. (default: "size") 
 #*
-#*		Return:  A matrix with normalized count data
+#*    Return:  A matrix with normalized count data
 #*
 getCountsData <- function(dds, normalize=c("size", "fpm", "fpkm")){
 
@@ -92,6 +92,8 @@ getCountsData <- function(dds, normalize=c("size", "fpm", "fpkm")){
 #*                     for x axis labels.
 #*        main_text:   Character vector, text for title of the plot.
 #*
+#*    Return:  None. Plot figure only
+#*
 fpCountsBoxPlot <- function(dds, normalize=c("size", "fpm", "fpkm"),
     label_area=2, main_text="Distribution of fp Counts") {
 
@@ -129,7 +131,9 @@ fpCountsBoxPlot <- function(dds, normalize=c("size", "fpm", "fpkm"),
 #*        x_label:      Character vector, text for x axis label
 #*        y_label:      Character vector, text for y axis label
 #*        main_text:    Character vector, title of the plot
-#*		
+#*
+#*    Return:  None. Plot figure only
+#*	
 
 plotReplicates <- function(dds, normalize=c("size", "fpm", "fpkm"),
     replicates=c(1,2), show.cor=TRUE, is.log2=FALSE,
@@ -177,6 +181,7 @@ plotReplicates <- function(dds, normalize=c("size", "fpm", "fpkm"),
 #*        x_pos:        Integer, x coordinate for text plot of pearson's r
 #*        y_pos:        Integer, y coordinate for text plot of pearson's r
 #*
+#*    Return:  None. Plot figure only
 #*
 plotTranslationEfficiency <- function(dds, ratio_level=1, 
     x_label="TE of Wild Type", y_label="TE of Mutant", 
@@ -218,9 +223,10 @@ plotTranslationEfficiency <- function(dds, ratio_level=1,
 #*    Maximum number of colors is 24.
 #*
 #*    Argument: 
+#*
 #*        num_colors: positive integer, total number of colors.
 #*
-#*    Return:   Vector of R colors with length of num_colors.
+#*    Return:  Vector of R colors with length of num_colors.
 #*
 getPlotColors <- function(num_colors) {
 
@@ -271,6 +277,7 @@ getDefaultColors <- function()
 #*        read_len:    Positive integer vector, length of reads (alignments).
 #*        title_text:  Character vector, text for title
 #*
+#*    Return:  None. Plot figure only
 #*
 fpFramePlot <- function(frame_file, by_column=TRUE, fp_column=c(2:4),
     read_len=c(25:30), legend_pos="topleft",
@@ -317,6 +324,8 @@ fpFramePlot <- function(frame_file, by_column=TRUE, fp_column=c(2:4),
 #*        beside:           Logic, If FALSE, the columns of height are portrayed
 #*                          as stacked bars, and if TRUE the columns will be 
 #*                          portrayed as juxtaposed bars.
+#*
+#*    Return:  None. Plot figure only
 #*	
 plotMetageneFrames <- function(metagene_atStart=NULL, metagene_atStop=NULL,
     min_5p=-20, max_5p=200, min_3p=-200, max_3p=20,
@@ -353,7 +362,7 @@ plotMetageneFrames <- function(metagene_atStart=NULL, metagene_atStop=NULL,
 }
 
 
-#*	===========================================================================
+#*  ===========================================================================
 #*
 #*    9.  getRegionFrames()
 #*
@@ -451,7 +460,7 @@ getPrettyLabels <- function(min_val, max_val) {
 }
 
 
-#*	===========================================================================
+#*  ===========================================================================
 #*
 #*    11.  metageneCountsPlot()
 #*
@@ -490,7 +499,7 @@ plotMetageneCounts <- function(count_file, from_position=-50,
 }
 
 
-#*	=======================================================================
+#*  =======================================================================
 #*
 #*    12)  plotHeatmap()
 #*
@@ -510,6 +519,8 @@ plotMetageneCounts <- function(count_file, from_position=-50,
 #*        is.log2:      Logic, is the data log2 transformed.
 #*        scale_by:     Character vector, how the data is scaled,
 #*                      either "row" or "column"	
+#*
+#*    Return:  None. Plot figure only
 #*
 plotHeatmap <- function(plot_value, sample_name, gene_name, 
     image_type="pdf", image_width=8, is.log2=FALSE, scale_by="row") {
@@ -561,6 +572,8 @@ plotHeatmap <- function(plot_value, sample_name, gene_name,
 #*                     "pdf", "tiff", or "png".
 #*        image_size:  Positive integer, image height.
 #*
+#*    Return:  None. Plot figure only
+#*
 plotCorrelationHeatmap <- function(dds, 
     normalize=c("size", "fpm", "fpkm"),
     image_name, image_type="pdf", image_size=12) {
@@ -593,6 +606,7 @@ plotCorrelationHeatmap <- function(dds,
 #*                      "pdf", "tiff", or "png".
 #*        image_width:  Positive integer, image width.
 #*
+#*    Return:  None. Plot figure only
 #*
 plotRedBlueCorrelationImage <- function(corr_data, image_name, 
     image_type="pdf", image_width=12) {
@@ -686,6 +700,7 @@ plotRedBlueCorrelationImage <- function(corr_data, image_name,
 #*                      "pie".
 #*        p_threshold:  Numeric, the threshold for significant level
 #*
+#*    Return:  None. Plot figure only
 #*
 plotCorrelationMatrix <- function(plot_data, 
     cor_method="rcorr", cor_type="spearman", 
@@ -725,7 +740,7 @@ plotCorrelationMatrix <- function(plot_data,
 #*        x_interval:     Positive integer, interval for x-axis lables
 #*        line_colors:    Character vector of R color names for lines.
 #*
-#*        Return: None
+#*    Return:  None. Plot figure only
 #*
 
 plotMultiMetageneCounts <- function(count_files, from_position=-50, 
